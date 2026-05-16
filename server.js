@@ -6,7 +6,6 @@ const connectDB = require('./config/db');
 const auth = require('./routes/auth');
 const payment = require('./routes/payment');
 const video = require('./routes/video');
-const { stripeWebhook } = require('./controllers/payment');
 
 const app = express();
 
@@ -21,12 +20,8 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// 3. Stripe Webhook (يجب قبل express.json)
-app.post(
-    '/api/payment/webhook',
-    express.raw({ type: 'application/json' }),
-    stripeWebhook
-);
+// 3. Stripe Webhook مُعرَّف في routes/payment.js مع express.raw
+// (سيُسجَّل تلقائياً عبر app.use('/api/payment', payment) في السطر 163)
 
 // 4. Body Parser
 app.use(express.json({ limit: '10kb' }));

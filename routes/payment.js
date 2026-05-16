@@ -3,10 +3,11 @@ const router = express.Router();
 const { createCheckoutSession, stripeWebhook } = require('../controllers/payment');
 const { protect } = require('../middleware/auth');
 
-// ⚠️ الـ Webhook يجب أن يستخدم raw body (قبل JSON parser) لكي يتحقق Stripe من التوقيع
+// ✅ Stripe Webhook - يجب أن يكون قبل JSON parser
+// express.raw() يضمن أن Stripe يستطيع التحقق من التوقيع
 router.post('/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
 
-// إنشاء PaymentIntent للدفع
+// ✅ إنشاء PaymentIntent للدفع النظيف
 router.post('/checkout', protect, createCheckoutSession);
 
 module.exports = router;
